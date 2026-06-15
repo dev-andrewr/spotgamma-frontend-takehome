@@ -1,73 +1,51 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Live-Calculating Matrix UI (Spreadsheet Clone)
 
-Currently, two official plugins are available:
+A high-performance, real-time spreadsheet web application built for the SpotGamma Frontend Engineering assessment.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**Live Demo:** [Insert Your GitHub Pages URL Here]
 
-## React Compiler
+## 🚀 Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **10x10 Editable Grid:** Rendered strictly with CSS Grid, featuring columns A-J and rows 1-10.
+* **Real-Time Formula Evaluation:** Supports raw text, basic arithmetic (`=A1 + B2`), and range functions (`=SUM(A1:A5)`).
+* **Circular Dependency Protection:** Implements a Directed Acyclic Graph (DAG) with Depth-First Search (DFS) cycle detection to prevent infinite loops and safely block invalid updates (`#CYCLE!`).
+* **High Performance:** Decouples the business logic from the React view layer. Cell updates only recalculate explicitly dependent nodes, preventing O(n) cascading re-renders across the grid.
+* **Modern UI/UX:** Styled to resemble native spreadsheet software with fixed dimensions, active cell highlighting, and overflow text handling.
 
-## Expanding the ESLint configuration
+## 🛠 Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+* **Core:** React 18, TypeScript, Vite
+* **State & Logic:** Vanilla TypeScript (Custom reactive Dependency Graph)
+* **Styling:** Plain CSS (CSS Grid, CSS Variables)
+* **Deployment:** GitHub Pages
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🧠 Architectural Approach
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 1. State Management & The "Engine"
+Instead of tying spreadsheet data directly to React state (which would trigger massive re-renders on every keystroke), the core logic lives in a plain TypeScript class called `SpreadsheetEngine`. This engine acts as a custom reactive store. React only subscribes to high-level update "ticks" from the engine to know when to re-render the view.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 2. The Dependency Graph
+Mathematical relationships between cells are modeled as a Graph. 
+* When a formula is parsed, the engine maps **Dependencies** (what a cell relies on) and **Dependents** (who relies on this cell).
+* If `A1` is updated, the engine does not recalculate the whole grid. It performs a targeted topological update solely on `A1`'s dependents, resulting in zero input lag.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 3. Safe Evaluation & Cycle Detection
+* **Cycles:** Before any formula is committed to state, a DFS algorithm runs ahead to check for circular references (e.g., A1 -> B1 -> A1). If a cycle is detected, the evaluation is safely aborted.
+* **Evaluation:** Math is evaluated using a strictly bound `new Function("return ...")()` rather than the insecure global `eval()`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 💻 Local Development
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/YOUR_GITHUB_NAME/spotgamma-frontend-takehome.git](https://github.com/YOUR_GITHUB_NAME/spotgamma-frontend-takehome.git)
+   cd spotgamma-frontend-takehome
+
+2. **Install dependancies:**
+`npm install`
+
+3. **Start the development server:**
+`npm run dev`
+
+4.**Build for production:**
+`npm run build`
