@@ -1,0 +1,92 @@
+:root {
+  --primary-color: #1a73e8;
+  --border-color: #e0e0e0;
+  --header-bg: #f8f9fa;
+  --header-text: #5f6368;
+  --error-bg: #fce8e6;
+  --error-text: #d93025;
+  --text-color: #202124;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.spreadsheet-container {
+  display: grid;
+  /* 40px for row numbers, 80px for each of the 10 data columns */
+  grid-template-columns: 40px repeat(10, 80px); 
+  grid-auto-rows: 32px;
+  width: max-content; /* Prevents the grid from squishing */
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: #fff;
+  font-family: var(--font-family);
+  font-size: 13px;
+  color: var(--text-color);
+  /* A subtle shadow lifts the whole app off the page */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.grid-header-corner {
+  background-color: var(--header-bg);
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.grid-header-col, .grid-header-row {
+  background-color: var(--header-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+  color: var(--header-text);
+  user-select: none;
+}
+
+.grid-cell {
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  position: relative;
+  background: #ffffff;
+  cursor: cell;
+  transition: background-color 0.1s ease;
+}
+
+.grid-cell:hover {
+  background-color: #f1f3f4;
+}
+
+.grid-cell.cell-error {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  font-weight: 600;
+}
+
+.cell-display {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis; /* Adds the "..." if text is too long */
+}
+
+.cell-input {
+  width: calc(100% + 1px);
+  height: calc(100% + 1px);
+  box-sizing: border-box;
+  border: 2px solid var(--primary-color);
+  outline: none;
+  padding: 0 7px;
+  font-family: inherit;
+  font-size: inherit;
+  position: absolute;
+  top: -1px; /* Pulls the border outside the cell bounds slightly */
+  left: -1px;
+  z-index: 10;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15); /* Gives the active cell a nice pop */
+}
